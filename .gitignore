@@ -1,0 +1,8 @@
+*.log
+keys/
+static/
+media/
+.idea
+*.iml
+tmp/
+*.sqlite3

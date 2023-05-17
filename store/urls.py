@@ -6,5 +6,5 @@ from products import urls as products_url
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', index, name='index'),
-    path('products', include(products_url))
+    path('products', include(products_url, namespace='products'))
 ]
