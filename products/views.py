@@ -6,10 +6,17 @@ def index(request):
     return render(request, template_name='products/index.html')
 
 
-def products(request):
+def products(request, category=None):
+    categories = ProductCategory.objects.all()
+    products_list = Product.objects.all()
+    print(category)
+
+    if category:
+        products_list = products_list.filter(category_id=category)
+
     context = {
         'title': 'Store - Каталог',
-        'products_list': Product.objects.all(),
-        'categories': ProductCategory.objects.all(),
+        'products_list': products_list,
+        'categories': categories,
     }
     return render(request, template_name='products/products.html', context=context)
