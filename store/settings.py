@@ -131,4 +131,11 @@ STATICFILES_DIRS = ['static', 'media']
 
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# Авторизация
 AUTH_USER_MODEL = 'users.User'
+
+LOGIN_URL = 'user/login'
+
+LOGIN_REDIRECT_URL = '/user'
+
+LOGOUT_REDIRECT_URL = '/'

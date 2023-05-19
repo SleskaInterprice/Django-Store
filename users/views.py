@@ -1,61 +1,36 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, reverse
-from django.http.response import HttpResponseRedirect, HttpResponseNotFound
-from django.contrib.auth import login, authenticate, logout
+from django.http.response import HttpResponseRedirect
+from django.contrib.auth.views import LoginView
+from django.views.generic import CreateView, RedirectView
 
 from users.forms import UserLoginForm, UserForm, UserEditForm
 
 
-def index(request):
-    if not request.user:
-        return HttpResponseRedirect(redirect_to=reverse('user:authorization'))
-    return HttpResponseRedirect(redirect_to=reverse('user:profile'))
+class IndexView(RedirectView):
+    def get_redirect_url(self, *args, **kwargs):
+        return '/user/profile/' if self.request.user.is_authenticated else '/user/login/'
 
 
-def authorization(request):
-    if request.method == 'POST':
-        form = UserLoginForm(data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username', '')
-            password = form.cleaned_data.get('password', '')
-            user = authenticate(request, username=username, password=password)
-            if user:
-                login(request, user)
-                return HttpResponseRedirect(redirect_to=reverse('user:profile'))
-    else:
-        form = UserLoginForm()
-
-    context = {
-        'form': form,
-    }
-    return render(request, 'users/login.html', context=context)
+class AuthorizationView(LoginView):
+    template_name = 'users/login.html'
+    form_class = UserLoginForm
 
 
-def registration(request):
-    form = UserForm
-    if request.method == 'POST':
-        form = UserForm(data=request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(redirect_to=reverse('user:authorization'))
-    context = {
-        'form': form,
-    }
-    return render(request, 'users/register.html', context)
+class RegistrationView(CreateView):
+    template_name = 'users/register.html'
+    form_class = UserForm
+    success_url = 'user/login'
 
 
+@login_required
 def profile(request):
     form = UserEditForm(instance=request.user)
     if request.method == 'POST':
         user = UserEditForm(instance=request.user, data=request.POST, files=request.FILES)
-        print(user.errors)
         user.save()
         return HttpResponseRedirect(reverse('user:profile'))
     context = {
         'form': form,
     }
     return render(request, 'users/profile.html', context)
-
-
-def use_logout(request):
-    logout(request)
-    return HttpResponseRedirect(redirect_to=reverse('index'))

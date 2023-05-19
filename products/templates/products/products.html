@@ -17,7 +17,7 @@
                 <h1 class="my-4">Store</h1>
                 <div class="list-group">
                     {% for category in categories %}
-                        <a href="{% url 'products:products_with_category' category.id %}" class="list-group-item">{{ category.name }}</a>
+                        <a href="{% url "products:filtered_products" category.id number_of_page %}" class="list-group-item">{{ category.name }}</a>
                     {% endfor %}
                 </div>
             </div>
@@ -84,7 +84,7 @@
                         <li class="page-item"><a class="page-link" href="#">2</a></li>
                         <li class="page-item"><a class="page-link" href="#">3</a></li>
                         <li class="page-item">
-                            <a class="page-link" href="#">Next</a>
+                            <a class="page-link" href="{% url "products:filtered_products" category_id number_of_page  %}">Next</a>
                         </li>
                     </ul>
                 </nav>
