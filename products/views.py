@@ -14,7 +14,6 @@ class IndexView(TemplateView):
         return context
 
 
-
 def products(request, category=None, number_of_page=1):
     categories = ProductCategory.objects.all()
     products_list = Product.objects.all()

@@ -5,6 +5,8 @@ from django.contrib.auth.views import LoginView
 from django.views.generic import CreateView, RedirectView
 
 from users.forms import UserLoginForm, UserForm, UserEditForm
+from users.models import Basket
+from products.models import Product
 
 
 class IndexView(RedirectView):
@@ -32,5 +34,27 @@ def profile(request):
         return HttpResponseRedirect(reverse('user:profile'))
     context = {
         'form': form,
+        'basket_list': Basket.objects.filter(user_id=request.user.id),
     }
     return render(request, 'users/profile.html', context)
+
+
+def add_product(request, product_id=None, quantity=1):
+    product = Product.objects.get(id=product_id)
+    user_basket = Basket.objects.filter(user=request.user, product=product)
+    if not user_basket.exists():
+        basket = Basket(user=request.user, quantity=1, product=product)
+        basket.save()
+    else:
+        user_basket = user_basket.first()
+        user_basket.quantity += quantity
+        user_basket.save()
+    return HttpResponseRedirect(redirect_to=request.META['HTTP_REFERER'])
+
+
+def delete_basket(request, basket_id):
+    basket = Basket.objects.filter(id=basket_id)
+    if basket.exists():
+        basket.first().delete()
+    return HttpResponseRedirect(redirect_to=request.META['HTTP_REFERER'])
+
