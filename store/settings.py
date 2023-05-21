@@ -131,6 +131,8 @@ STATICFILES_DIRS = ['static', 'media']
 
 MEDIA_ROOT = BASE_DIR / 'media'
 
+BASE_URL = 'http://127.0.0.1:8000'
+
 # Авторизация
 AUTH_USER_MODEL = 'users.User'
 
@@ -139,3 +141,11 @@ LOGIN_URL = 'user/login'
 LOGIN_REDIRECT_URL = '/user'
 
 LOGOUT_REDIRECT_URL = '/'
+
+# Почта
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'Sleska4@yandex.ru'
+EMAIL_HOST_PASSWORD = ''
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True

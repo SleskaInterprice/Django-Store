@@ -1,5 +1,4 @@
-from django.shortcuts import render
-from django.core.paginator import Paginator
+from django.shortcuts import reverse
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 

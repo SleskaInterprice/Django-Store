@@ -1,11 +1,13 @@
+from datetime import datetime
+
 from django.shortcuts import reverse
 from django.http.response import HttpResponseRedirect
 from django.contrib.auth.views import LoginView
-from django.views.generic import CreateView, RedirectView
+from django.views.generic import CreateView, RedirectView, TemplateView
 from django.views.generic.edit import UpdateView
 
 from users.forms import UserLoginForm, UserForm, UserEditForm
-from users.models import Basket, User
+from users.models import Basket, User, EmailVerification
 from products.models import Product
 
 
@@ -14,6 +16,23 @@ class IndexView(RedirectView):
         if self.request.user.is_authenticated:
             return reverse('user:profile', kwargs={'pk': self.request.user.id})
         return reverse('user:authorization')
+
+
+class EmailVerificationView(TemplateView):
+    template_name = 'users/email_verification.html'
+
+    def get(self, request, *args, **kwargs):
+        res = super(EmailVerificationView, self).get(self.request)
+        verification_elem = EmailVerification.objects.filter(code=self.kwargs.get('code'))
+        if verification_elem.exists():
+            verification_elem = verification_elem.first()
+            user = verification_elem.user
+            if verification_elem.expiration < datetime.now().time():
+                user.is_verified_email = True
+                user.save()
+                verification_elem.delete()
+
+        return res
 
 
 class AuthorizationView(LoginView):
