@@ -17,7 +17,7 @@
                 <h1 class="my-4">Store</h1>
                 <div class="list-group">
                     {% for category in categories %}
-                        <a href="{% url "products:filtered_products" category.id number_of_page %}" class="list-group-item">{{ category.name }}</a>
+                        <a href="{% url "products:filtered_products" category.id 1 %}" class="list-group-item">{{ category.name }}</a>
                     {% endfor %}
                 </div>
             </div>
@@ -51,7 +51,7 @@
                 </div>
 
                 <div class="row">
-                    {% for product in products_list %}
+                    {% for product in page_obj %}
                         <div class="col-lg-4 col-md-6 mb-4">
                             <div class="card h-100">
                                 <a href="{% url 'user:add_product' product.id %}">
@@ -77,19 +77,37 @@
 
                 </div>
 
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-center">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                        </li>
-                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="{% url "products:filtered_products" category_id number_of_page  %}">Next</a>
-                        </li>
-                    </ul>
-                </nav>
+                {% if is_paginated %}
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+                                <a
+                                    class="page-link"
+                                    href="{% if page_obj.has_previous %}
+                                        {% url "products:filtered_products" category_id page_obj.previous_page_number  %}
+                                    {% endif %}"
+                                    aria-disabled="{% if not page_obj.has_previous %}true{% endif %}"
+                                >
+                                    Previous
+                                </a>
+                            </li>
+                            {% for page in paginator.page_range %}
+                                <li class="page-item"><a class="page-link" href="{% url 'products:test' page %}">{{ page }}</a></li>
+                            {% endfor %}
+                            <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+                                <a
+                                    class="page-link"
+                                    href="{% if page_obj.has_next %}
+                                        {% url "products:filtered_products" category_id page_obj.next_page_number  %}
+                                    {% endif %}"
+                                    aria-disabled="{% if not page_obj.has_next %}true{% endif %}"
+                                >
+                                    Next
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                {% endif %}
             </div>
         </div>
     </div>

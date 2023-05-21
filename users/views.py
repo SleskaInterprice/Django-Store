@@ -1,17 +1,19 @@
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, reverse
+from django.shortcuts import reverse
 from django.http.response import HttpResponseRedirect
 from django.contrib.auth.views import LoginView
 from django.views.generic import CreateView, RedirectView
+from django.views.generic.edit import UpdateView
 
 from users.forms import UserLoginForm, UserForm, UserEditForm
-from users.models import Basket
+from users.models import Basket, User
 from products.models import Product
 
 
 class IndexView(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
-        return '/user/profile/' if self.request.user.is_authenticated else '/user/login/'
+        if self.request.user.is_authenticated:
+            return reverse('user:profile', kwargs={'pk': self.request.user.id})
+        return reverse('user:authorization')
 
 
 class AuthorizationView(LoginView):
@@ -22,21 +24,23 @@ class AuthorizationView(LoginView):
 class RegistrationView(CreateView):
     template_name = 'users/register.html'
     form_class = UserForm
-    success_url = 'user/login'
+
+    def get_success_url(self):
+        return reverse('user:authorization')
 
 
-@login_required
-def profile(request):
-    form = UserEditForm(instance=request.user)
-    if request.method == 'POST':
-        user = UserEditForm(instance=request.user, data=request.POST, files=request.FILES)
-        user.save()
-        return HttpResponseRedirect(reverse('user:profile'))
-    context = {
-        'form': form,
-        'basket_list': Basket.objects.filter(user_id=request.user.id),
-    }
-    return render(request, 'users/profile.html', context)
+class ProfileView(UpdateView):
+    template_name = 'users/profile.html'
+    form_class = UserEditForm
+    model = User
+
+    def get_success_url(self):
+        return reverse('user:profile', kwargs={'pk': self.request.user.id})
+
+    def get_context_data(self, **kwargs):
+        context = super(ProfileView, self).get_context_data()
+        context['basket_list'] = Basket.objects.filter(user_id=self.request.user.id)
+        return context
 
 
 def add_product(request, product_id=None, quantity=1):
