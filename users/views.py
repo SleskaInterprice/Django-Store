@@ -5,6 +5,7 @@ from django.http.response import HttpResponseRedirect
 from django.contrib.auth.views import LoginView
 from django.views.generic import CreateView, RedirectView, TemplateView
 from django.views.generic.edit import UpdateView
+from django.http.response import Http404
 
 from users.forms import UserLoginForm, UserForm, UserEditForm
 from users.models import Basket, User, EmailVerification
@@ -16,23 +17,6 @@ class IndexView(RedirectView):
         if self.request.user.is_authenticated:
             return reverse('user:profile', kwargs={'pk': self.request.user.id})
         return reverse('user:authorization')
-
-
-class EmailVerificationView(TemplateView):
-    template_name = 'users/email_verification.html'
-
-    def get(self, request, *args, **kwargs):
-        res = super(EmailVerificationView, self).get(self.request)
-        verification_elem = EmailVerification.objects.filter(code=self.kwargs.get('code'))
-        if verification_elem.exists():
-            verification_elem = verification_elem.first()
-            user = verification_elem.user
-            if verification_elem.expiration < datetime.now().time():
-                user.is_verified_email = True
-                user.save()
-                verification_elem.delete()
-
-        return res
 
 
 class AuthorizationView(LoginView):
@@ -80,4 +64,28 @@ def delete_basket(request, basket_id):
     if basket.exists():
         basket.first().delete()
     return HttpResponseRedirect(redirect_to=request.META['HTTP_REFERER'])
+
+
+class EmailVerificationView(TemplateView):
+    template_name = 'users/email_verification.html'
+
+    def get(self, request, *args, **kwargs):
+        res = super(EmailVerificationView, self).get(self.request)
+        verification_elem = EmailVerification.objects.filter(code=self.kwargs.get('code'))
+        if verification_elem.exists():
+            verification_elem = verification_elem.first()
+            user = verification_elem.user
+            if verification_elem.expiration < datetime.now().time():
+                user.is_verified_email = True
+                user.save()
+                verification_elem.delete()
+        return res
+
+    def get_context_data(self, **kwargs):
+        context = super(EmailVerificationView, self).get_context_data()
+        context['success'] = True
+        verification_elem = EmailVerification.objects.filter(code=self.kwargs.get('code'))
+        if not verification_elem or verification_elem.expiration > datetime.now().time():
+            context['success'] = False
+        return context
 

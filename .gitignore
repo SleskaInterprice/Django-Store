@@ -5,3 +5,4 @@ media/
 *.iml
 tmp/
 *.sqlite3
+venv

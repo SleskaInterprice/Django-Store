@@ -3,7 +3,7 @@ from django.shortcuts import reverse
 from http import HTTPStatus
 
 
-class IndexTestCase(TestCase):
+class ProductsTestCase(TestCase):
 
     def test_view(self):
         path = reverse('index')
