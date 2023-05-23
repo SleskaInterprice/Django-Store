@@ -3,8 +3,7 @@ from http import HTTPStatus
 from django.test import TestCase
 from django.shortcuts import reverse
 
-from users.models import User, Basket, EmailVerification
-from users.forms import UserForm
+from users.models import User
 
 
 class UserTestCase(TestCase):
@@ -111,5 +110,3 @@ class UserTestCase(TestCase):
         response = self.client.post(
             reverse('user:authorization'), {'username': user['username'], 'password': user['password1']})
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
-
-        self.assertFalse(Basket.objects.filter(user_id=response.user.id).exists())

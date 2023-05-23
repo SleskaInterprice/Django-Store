@@ -5,7 +5,7 @@ from django.http.response import HttpResponseRedirect
 from django.contrib.auth.views import LoginView
 from django.views.generic import CreateView, RedirectView, TemplateView
 from django.views.generic.edit import UpdateView
-from django.http.response import Http404
+from django.contrib.auth.decorators import login_required
 
 from users.forms import UserLoginForm, UserForm, UserEditForm
 from users.models import Basket, User, EmailVerification
@@ -46,6 +46,7 @@ class ProfileView(UpdateView):
         return context
 
 
+@login_required
 def add_product(request, product_id=None, quantity=1):
     product = Product.objects.get(id=product_id)
     user_basket = Basket.objects.filter(user=request.user, product=product)
@@ -59,6 +60,7 @@ def add_product(request, product_id=None, quantity=1):
     return HttpResponseRedirect(redirect_to=request.META['HTTP_REFERER'])
 
 
+@login_required
 def delete_basket(request, basket_id):
     basket = Basket.objects.filter(id=basket_id)
     if basket.exists():

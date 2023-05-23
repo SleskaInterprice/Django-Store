@@ -9,4 +9,5 @@ urlpatterns = [
     path('', IndexView.as_view(), name='index'),
     path('products/', include(products_urls, namespace='products')),
     path('user/', include(users_urls, namespace='user')),
+    path('accounts/', include('allauth.urls')),
 ]
