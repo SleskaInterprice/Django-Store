@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+
 from products.views import IndexView
 from products import urls as products_urls
 from users import urls as users_urls
@@ -11,3 +13,6 @@ urlpatterns = [
     path('user/', include(users_urls, namespace='user')),
     path('accounts/', include('allauth.urls')),
 ]
+
+if settings.DEBUG:
+    urlpatterns.append(path('__debug__/', include('debug_toolbar.urls')))

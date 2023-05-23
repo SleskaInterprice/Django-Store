@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.github',
+    'debug_toolbar',
 
     'products',
     'users'
@@ -44,6 +45,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'store.urls'
@@ -59,6 +62,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'products.context_processors.basket',
             ],
         },
     },
@@ -130,6 +134,10 @@ STATICFILES_DIRS = ['static', 'media']
 MEDIA_ROOT = BASE_DIR / 'media'
 
 BASE_URL = 'http://127.0.0.1:8000'
+
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
 
 # Авторизация
 AUTH_USER_MODEL = 'users.User'

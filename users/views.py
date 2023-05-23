@@ -7,6 +7,7 @@ from django.views.generic import CreateView, RedirectView, TemplateView
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.decorators import login_required
 
+from common.view import TitleMixin
 from users.forms import UserLoginForm, UserForm, UserEditForm
 from users.models import Basket, User, EmailVerification
 from products.models import Product
@@ -19,31 +20,32 @@ class IndexView(RedirectView):
         return reverse('user:authorization')
 
 
-class AuthorizationView(LoginView):
+class AuthorizationView(TitleMixin, LoginView):
     template_name = 'users/login.html'
     form_class = UserLoginForm
 
+    title = 'Store | Авторизация'
 
-class RegistrationView(CreateView):
+
+class RegistrationView(TitleMixin, CreateView):
     template_name = 'users/register.html'
     form_class = UserForm
+
+    title = 'Store | Регистрация'
 
     def get_success_url(self):
         return reverse('user:authorization')
 
 
-class ProfileView(UpdateView):
+class ProfileView(TitleMixin, UpdateView):
     template_name = 'users/profile.html'
     form_class = UserEditForm
     model = User
 
+    title = 'Store | Профиль'
+
     def get_success_url(self):
         return reverse('user:profile', kwargs={'pk': self.request.user.id})
-
-    def get_context_data(self, **kwargs):
-        context = super(ProfileView, self).get_context_data()
-        context['basket_list'] = Basket.objects.filter(user_id=self.request.user.id)
-        return context
 
 
 @login_required
@@ -68,8 +70,10 @@ def delete_basket(request, basket_id):
     return HttpResponseRedirect(redirect_to=request.META['HTTP_REFERER'])
 
 
-class EmailVerificationView(TemplateView):
+class EmailVerificationView(TitleMixin, TemplateView):
     template_name = 'users/email_verification.html'
+
+    title = 'Store | Подтверждение почты'
 
     def get(self, request, *args, **kwargs):
         res = super(EmailVerificationView, self).get(self.request)
