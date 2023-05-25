@@ -6,3 +6,4 @@ media/
 tmp/
 *.sqlite3
 venv
+.env_prod

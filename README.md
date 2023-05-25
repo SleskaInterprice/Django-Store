@@ -6,7 +6,7 @@
 
 - Python 3.7^
 - Postgresql 11^
-- бд store_db (по умолчанию нужен логин пароль postgres postgres, настраивается в store/settings.py)
+- бд store_db (по умолчанию нужен логин пароль postgres postgres, настраивается в .env)
 
 ## Установка
 1. Виртуальное окружение
