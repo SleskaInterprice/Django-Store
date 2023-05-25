@@ -1,9 +1,9 @@
-from django.contrib import admin
-from django.urls import path, include
 from django.conf import settings
+from django.contrib import admin
+from django.urls import include, path
 
-from products.views import IndexView
 from products import urls as products_urls
+from products.views import IndexView
 from users import urls as users_urls
 
 urlpatterns = [

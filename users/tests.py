@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
-from django.test import TestCase
 from django.shortcuts import reverse
+from django.test import TestCase
 
 from users.models import User
 
@@ -15,13 +15,6 @@ class UserTestCase(TestCase):
 
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
         self.assertRedirects(response, reverse('user:authorization'))
-
-    def test_login(self):
-        path = reverse('user:authorization')
-        response = self.client.get(path)
-
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertTemplateUsed(response, 'users/login.html')
 
     def test_registration(self):
         path = reverse('user:registration')
@@ -106,7 +99,12 @@ class UserTestCase(TestCase):
             'last_name': 'new_user_name', 'email': 'email@email.com',
             'password1': 'pass12101!AA3', 'password2': 'pass12101!AA3',
         }
+
         self.client.post(reverse('user:registration'), user)
+
         response = self.client.post(
             reverse('user:authorization'), {'username': user['username'], 'password': user['password1']})
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertTemplateUsed(response, 'users/login.html')
         self.assertEqual(response.status_code, HTTPStatus.FOUND)

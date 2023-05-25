@@ -1,6 +1,7 @@
-from django.test import TestCase
-from django.shortcuts import reverse
 from http import HTTPStatus
+
+from django.shortcuts import reverse
+from django.test import TestCase
 
 from products.models import Product, ProductCategory
 
@@ -24,4 +25,3 @@ class ProductsTestCase(TestCase):
         self.assertTemplateUsed(response, 'products/products.html')
         self.assertEqual(list(response.context_data['categories']), list(ProductCategory.objects.all()))
         self.assertEqual(list(response.context_data['page_obj']), list(Product.objects.all())[:3])
-

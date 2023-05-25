@@ -1,16 +1,16 @@
 from datetime import datetime
 
-from django.shortcuts import reverse
-from django.http.response import HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
+from django.http.response import HttpResponseRedirect
+from django.shortcuts import reverse
 from django.views.generic import CreateView, RedirectView, TemplateView
 from django.views.generic.edit import UpdateView
-from django.contrib.auth.decorators import login_required
 
 from common.view import TitleMixin
-from users.forms import UserLoginForm, UserForm, UserEditForm
-from users.models import Basket, User, EmailVerification
 from products.models import Product
+from users.forms import UserEditForm, UserForm, UserLoginForm
+from users.models import Basket, EmailVerification, User
 
 
 class IndexView(RedirectView):
@@ -94,4 +94,3 @@ class EmailVerificationView(TitleMixin, TemplateView):
         if not verification_elem or verification_elem.expiration > datetime.now().time():
             context['success'] = False
         return context
-

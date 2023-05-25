@@ -1,9 +1,8 @@
-from django.shortcuts import reverse
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 
 from common.view import TitleMixin
-from products.models import ProductCategory, Product
+from products.models import Product, ProductCategory
 
 
 class IndexView(TitleMixin, TemplateView):

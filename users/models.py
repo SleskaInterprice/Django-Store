@@ -1,7 +1,7 @@
-from django.db import models
-from django.contrib.auth.models import AbstractUser
 from django.conf import settings
+from django.contrib.auth.models import AbstractUser
 from django.core.mail import send_mail
+from django.db import models
 from django.shortcuts import reverse
 
 from products.models import Product
@@ -44,5 +44,6 @@ class EmailVerification(models.Model):
         return f'Email verification for {self.user.username}'
 
     def send_mail_verification(self):
-        mail = f'для подтверждения почты перейдите по ссылке \b {settings.BASE_URL}{reverse("user:email_verification", kwargs={"code": self.code})}'
+        mail = f'для подтверждения почты перейдите по ссылке \b {settings.BASE_URL}' \
+               f'{reverse("user:email_verification",kwargs={"code": self.code})}'
         send_mail('Тема', mail, settings.EMAIL_HOST_USER, [self.user.email])
