@@ -1,5 +1,6 @@
 {% extends 'products/base.html' %}
 {% load static %}
+{% load humanize %}
 
 {% block title %}{{ title }}{% endblock %}
 {% block css %}
@@ -75,7 +76,7 @@
                                         <input name="basketID" type="number" class="form-control"
                                                value="{{ elem.quantity }}" min="0">
                                     </div>
-                                    <div class="col-lg-4">{{ elem.sum }} руб.</div>
+                                    <div class="col-lg-4">{{ elem.sum|intcomma }} руб.</div>
                                     <div class="col-lg-4">
                                         <a href="{% url 'user:delete_basket' elem.id %}">
                                             <i class="fas fa-trash"></i>
@@ -90,10 +91,10 @@
                     <div class="card mb-3">
                         <div class="card-footer">
                             <p class="float-left">Итого</p>
-                            <h4 class="float-right">{{ basket_list.total_summ }} руб.</h4>
+                            <h4 class="float-right">{{ basket_list.total_sum|intcomma }} руб.</h4>
                         </div>
                     </div>
-                    <a class="btn btn-success btn-lg float-right" href="../orders/order-create.html">
+                    <a class="btn btn-success btn-lg float-right" href="{% url 'orders:create_order' %}">
                         Оформить заказ
                     </a>
                 {% else %}

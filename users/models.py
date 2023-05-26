@@ -13,7 +13,7 @@ class User(AbstractUser):
 
 
 class BasketManager(models.QuerySet):
-    def total_summ(self):
+    def total_sum(self):
         return sum(basket.sum() for basket in self)
 
     def total_quantity(self):
