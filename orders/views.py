@@ -1,9 +1,9 @@
-from django.views.generic.edit import CreateView
-from django.views.generic.base import TemplateView
 from django.shortcuts import reverse
+from django.views.generic.base import TemplateView
+from django.views.generic.edit import CreateView
 
-from orders.models import Orders
 from orders.forms import OrderForm
+from orders.models import Orders
 
 
 class CreateOrderView(CreateView):

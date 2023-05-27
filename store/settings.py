@@ -1,5 +1,5 @@
-from pathlib import Path
 import os
+from pathlib import Path
 
 import environ
 
@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'products',
     'users',
     'orders',
+    'baskets',
 ]
 
 MIDDLEWARE = [

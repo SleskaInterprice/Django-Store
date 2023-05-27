@@ -1,16 +1,13 @@
 from datetime import datetime
 
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
-from django.http.response import HttpResponseRedirect
 from django.shortcuts import reverse
 from django.views.generic import CreateView, RedirectView, TemplateView
 from django.views.generic.edit import UpdateView
 
 from common.view import TitleMixin
-from products.models import Product
 from users.forms import UserEditForm, UserForm, UserLoginForm
-from users.models import Basket, EmailVerification, User
+from users.models import EmailVerification, User
 
 
 class IndexView(RedirectView):
@@ -46,28 +43,6 @@ class ProfileView(TitleMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('user:profile', kwargs={'pk': self.request.user.id})
-
-
-@login_required
-def add_product(request, product_id=None, quantity=1):
-    product = Product.objects.get(id=product_id)
-    user_basket = Basket.objects.filter(user=request.user, product=product)
-    if not user_basket.exists():
-        basket = Basket(user=request.user, quantity=1, product=product)
-        basket.save()
-    else:
-        user_basket = user_basket.first()
-        user_basket.quantity += quantity
-        user_basket.save()
-    return HttpResponseRedirect(redirect_to=request.META['HTTP_REFERER'])
-
-
-@login_required
-def delete_basket(request, basket_id):
-    basket = Basket.objects.filter(id=basket_id)
-    if basket.exists():
-        basket.first().delete()
-    return HttpResponseRedirect(redirect_to=request.META['HTTP_REFERER'])
 
 
 class EmailVerificationView(TitleMixin, TemplateView):
